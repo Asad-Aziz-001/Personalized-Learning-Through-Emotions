@@ -126,7 +126,7 @@ else:
 # Safe Gemini setup for Railway
 # CHATBOT SETUP — FINAL WORKING VERSION (2025)
 
-genai.configure(api_key="AIzaSyBMWFGoLl4L2WsLvsh_046KF_tBEC9ni7Q") 
+genai.configure(api_key="GENAI_API_KEY") 
 
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
