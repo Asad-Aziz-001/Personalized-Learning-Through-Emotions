@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentellect — Wellness Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.0/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
+            border-radius: 20px;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.25);
+            transition: all 0.4s ease;
+        }
+        
+        .btn-sky {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            color: white;
+            font-weight: 600;
+            border-radius: 16px;
+            padding: 12px 28px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+        }
+        
+        .btn-sky:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.4);
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <div class="max-w-7xl mx-auto p-6 lg:p-10">
+
+        <!-- Header + Welcome -->
+        <div class="glass p-8 mb-8 text-center glass-card">
+            <h1 class="text-4xl lg:text-5xl font-bold text-sky-700 mb-3">
+                Welcome back, {{ current_user.name }}
+            </h1>
+            <p class="text-lg text-sky-600 mb-6">Your mental wellness journey continues</p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-6">
+                <span class="px-6 py-3 rounded-full bg-sky-100 text-sky-800 font-bold text-lg shadow-md">
+                {{ label|default("Low") }} Distress Level
+            </span>
+                <span class="px-6 py-3 rounded-full bg-white/80 text-slate-700 font-medium shadow">
+                {{ completed_chapters|length if completed_chapters else 0 }} / 6 Modules Completed
+            </span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="{{ url_for('chatbot_page') }}" class="btn-sky"><i class="fas fa-robot mr-2"></i> SentiBot</a>
+                <a href="{{ url_for('profile') }}" class="btn-sky"><i class="fas fa-user mr-2"></i> Profile</a>
+                <a href="{{ url_for('logout') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Stats Grid with Multiple Graphs -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+            <!-- Progress -->
+            <div class="glass p-6 text-center glass-card">
+                <h3 class="text-sky-700 font-bold text-lg mb-4">Overall Progress</h3>
+                <div class="text-5xl font-bold text-sky-600">{{ progress|default(0) }}%</div>
+                <div class="mt-4 bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div class="h-full progress-fill rounded-full transition-all duration-1000" style="width: 0%" data-progress="{{ progress|default(0) }}"></div>
+                </div>
+            </div>
+
+            <!-- Mood Trend (Line Chart) -->
+            <div class="glass p-6 glass-card">
+                <h3 class="text-sky-700 font-bold mb-3">Mood Trend (7 Days)</h3>
+                <div class="chart-container"><canvas id="moodChart"></canvas></div>
+            </div>
+
+            <!-- Risk Factors (Bar Chart) -->
+            <div class="glass p-6 glass-card">
+                <h3 class="text-sky-700 font-bold mb-3">Risk Factors</h3>
+                <div class="chart-container"><canvas id="riskChart"></canvas></div>
+            </div>
+
+            <!-- Session Activity (Doughnut) -->
+            <div class="glass p-6 glass-card">
+                <h3 class="text-sky-700 font-bold mb-3">Activity This Week</h3>
+                <div class="chart-container"><canvas id="activityChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- SHAP Insights (if available) -->
+        {% if shap_image %}
+        <div class="glass p-8 mb-10 text-center glass-card">
+            <h2 class="text-2xl font-bold text-sky-700 mb-6">Your Assessment Insights (AI Explained)</h2>
+            <img src="data:image/png;base64,{{ shap_image }}" alt="SHAP Chart" class="max-w-full rounded-2xl shadow-2xl mx-auto"> {% if shap_text %}
+            <p class="mt-6 text-slate-700 bg-sky-50 p-6 rounded-xl text-left font-medium leading-relaxed border-l-4 border-sky-500">
+                {{ shap_text | safe }}
+            </p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Wellness Modules -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {% for i in range(1,7) %} {% set titles = ["Mindful Awareness", "Emotional Regulation", "Cognitive Reframing", "Stress Resilience", "Self-Compassion", "Inner Harmony"] %} {% set descs = ["Learn to stay present and grounded.", "Manage emotions with proven
+            techniques.", "Shift negative thought patterns.", "Build tolerance to stress.", "Practice kindness toward yourself.", "Achieve deep emotional balance."] %} {% set is_completed = i|string in completed_chapters %} {% set is_next = (i == 1 or
+            (i-1)|string in completed_chapters) and not is_completed %}
+
+            <div class="glass p-8 text-center glass-card group">
+                <div class="text-5xl mb-4 text-sky-500">
+                    {% if is_completed %}<i class="fas fa-check-circle"></i> {% elif is_next %}<i class="fas fa-play-circle"></i> {% else %}<i class="fas fa-lock"></i>{% endif %}
+                </div>
+                <h3 class="text-xl font-bold text-sky-700 mb-2">Module 0{{ i }}</h3>
+                <h4 class="text-lg font-semibold text-slate-800 mb-3">{{ titles[i-1] }}</h4>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">{{ descs[i-1] }}</p>
+
+                {% if is_completed %}
+                <div class="text-emerald-600 font-bold text-lg mb-2">Completed</div>
+                <a href="{{ url_for('serve_chapter', chapter_num=i) }}" class="text-sky-600 hover:text-sky-800 text-sm underline">Review Module →</a> {% elif is_next %}
+                <a href="{{ url_for('serve_chapter', chapter_num=i) }}" class="btn-sky inline-block text-lg">
+                Start Module {{ i }}
+            </a> {% else %}
+                <div class="text-slate-500 font-medium">Complete previous module first</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <footer class="text-center mt-16 text-slate-600">
+            <p class="text-sm">© 2025 Sentellect • Your calm space in a busy world.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate progress bar
+            document.querySelectorAll('[data-progress]').forEach(bar => {
+                setTimeout(() => {
+                    bar.style.width = bar.dataset.progress + '%';
+                }, 300);
+            });
+
+            // Mood Trend Line Chart
+            new Chart(document.getElementById('moodChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Mood',
+                        data: [3.2, 3.8, 4.1, 4.5, 4.2, 4.7, 4.9],
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#38bdf8'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Risk Factors Bar Chart
+            new Chart(document.getElementById('riskChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Sleep', 'Stress', 'Social', 'Exercise', 'Diet'],
+                    datasets: [{
+                        data: [12, 28, 15, 8, 18],
+                        backgroundColor: ['#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd', '#e0f2fe'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Weekly Activity Doughnut
+            new Chart(document.getElementById('activityChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mindfulness', 'Journal', 'Breathing', 'Chatbot'],
+                    datasets: [{
+                        data: [35, 25, 20, 20],
+                        backgroundColor: ['#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd'],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
