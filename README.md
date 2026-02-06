@@ -829,7 +829,7 @@ Response: 200 OK
 <a href="https://github.com/Asad-Aziz-001">
   <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
 </a>
-<a href="https://linkedin.com/in/asadaziz001">
+<a href="https://www.linkedin.com/in/asad-aziz-140p/">
   <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white">
 </a><br><br>
 <details>
@@ -898,7 +898,7 @@ This project is licensed for **non-commercial educational purposes only**.
 - 📝 Include original license
 
 © 2025 Sentellect Team — Final Year Project  
-Bahauddin Zakariya University, Multan, Pakistan
+Bahria University Lahore, Pakistan
 
 For commercial licensing inquiries: [contact@sentellect.edu](mailto:asadaziz40p@gmail.com)
 
@@ -906,18 +906,12 @@ For commercial licensing inquiries: [contact@sentellect.edu](mailto:asadaziz40p@
 
 ---
 
-## 🙏 Acknowledgments
-
-### 🎓 Academic Supervisors
-
-- **Dr. [Supervisor Name]** — Project Supervisor
-- **Prof. [Co-Supervisor Name]** — Technical Advisor
 
 ### 🏛️ Institution
 
-- **Bahauddin Zakariya University, Multan**
+- **Bahria University Lahore Campus**
 - Department of Computer Science & IT
-- Final Year Project 2024-2025
+- Final Year Project 2025
 
 ### 🤝 Special Thanks
 
@@ -941,7 +935,7 @@ For commercial licensing inquiries: [contact@sentellect.edu](mailto:asadaziz40p@
 
 ### 💬 Get in Touch
 
-[![Email](https://img.shields.io/badge/Email-asadaziz2826%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:asadaziz2826@gmail.com)
+[![Email](https://img.shields.io/badge/Email-asadaziz2826%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:asadaziz40p@gmail.com)
 [![GitHub Issues](https://img.shields.io/badge/Report_Bug-GitHub_Issues-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asad-Aziz-001/sentellect/issues)
 [![Discussions](https://img.shields.io/badge/Community-Discussions-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://github.com/Asad-Aziz-001/sentellect/discussions)
 
