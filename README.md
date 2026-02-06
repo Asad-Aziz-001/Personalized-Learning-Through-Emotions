@@ -935,7 +935,7 @@ For commercial licensing inquiries: [contact@sentellect.edu](mailto:asadaziz40p@
 
 ### 💬 Get in Touch
 
-[![Email](https://img.shields.io/badge/Email-asadaziz2826%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:asadaziz40p@gmail.com)
+[![Email](https://img.shields.io/badge/Email-asadaziz40p%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:asadaziz40p@gmail.com)
 [![GitHub Issues](https://img.shields.io/badge/Report_Bug-GitHub_Issues-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asad-Aziz-001/sentellect/issues)
 [![Discussions](https://img.shields.io/badge/Community-Discussions-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://github.com/Asad-Aziz-001/sentellect/discussions)
 
